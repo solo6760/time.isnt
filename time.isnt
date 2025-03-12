@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Incorrect Time</title>
+  <style>
+    body {
+      background-color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #time-display {
+      font-size: 10em;
+      font-weight: bold;
+      text-align: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+    }
+
+    #incorrect-box {
+        position: absolute;
+        top: 0;           /* Attach to the top edge */
+        left: 19;          /* Start at the left edge */
+        background-color: red;
+        color: white;
+        padding: 10px;
+        font-size: 16px;
+        text-align: center;
+        width: auto;      /* Let width adjust to content */
+        min-width: 100px;  /* BUT have a minimum width */
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        transform: translateX(100px); /* Move 10px to the right */
+    }
+
+  </style>
+</head>
+<body>
+
+<div id="incorrect-box">TIME.ISNT</div>
+
+<div id="time-display"></div>
+
+<script>
+  function updateIncorrectTime() {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    // Make it incorrect (add 3 hours, subtract 5 minutes and 10 seconds, for example)
+    hours = (hours + 3) % 24;  // Keep within 24-hour range
+    let adjustedMinutes = minutes - 5;
+    let adjustedSeconds = seconds -10;
+    
+    //handle negative minutes
+    if (adjustedMinutes < 0){
+        adjustedMinutes = 60 + adjustedMinutes;
+        hours = hours -1;
+    }
+
+    //handle negative seconds
+    if(adjustedSeconds < 0){
+        adjustedSeconds = 60 + adjustedSeconds;
+        adjustedMinutes = adjustedMinutes -1;
+    }
+    
+    //handle 24 hour edge case
+    if (hours < 0) {
+        hours = 24+ hours;
+    }
+
+    // Determine AM/PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    // Convert to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+
+    // Add leading zeros if needed
+    const formattedMinutes = String(adjustedMinutes).padStart(2, '0');
+    const formattedSeconds = String(adjustedSeconds).padStart(2, '0');
+    
+    //display time
+    const timeString = `${hours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
+    document.getElementById('time-display').textContent = timeString;
+  }
+
+  // Update the time every 500 milliseconds (half a second) for smoother second changes
+  setInterval(updateIncorrectTime, 500);
+
+  // Initial call to display the time immediately
+  updateIncorrectTime();
+</script>
+
+</body>
+</html>
